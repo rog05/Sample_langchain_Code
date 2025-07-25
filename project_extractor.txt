@@ -1,0 +1,83 @@
+import pdfplumber
+
+BALANCE_SHEET_KEYWORDS = [
+    "Standalone Balance sheet", "As at March 31", "Assets", "Total assets", "Notes",
+    "ASSETS", "NOTE NO.", "PARTICULARS", "As at 31 March", "Financial assets",
+    "AS AT 31ST MARCH", "Loans", "Non-current assets"
+]
+
+BALANCE_SHEET_AVOID = ["Consolidated", "Summary", "Unaudited", "Schedule", "ANNEXTURE", "SUBSIDIARY"]
+
+PROFIT_LOSS_KEYWORDS = [
+    "Standalone Statement of Profit and Loss", "Revenue", "Expenses", "Total Income",
+    "Profit before tax", "Profit after tax", "Income", "Expenditure",
+    "For the year ended", "Employee benefits expense", "Depreciation"
+]
+
+PROFIT_LOSS_AVOID = ["Consolidated", "Summary", "Unaudited", "Schedule", "SUBSIDIARY", "Annual General Meeting"]
+
+CASH_FLOW_KEYWORDS = [
+    "Statement of Cash Flows", "Cash flow", "Cash flows", "Operating activities",
+    "Investing activities", "Financing activities", "Net increase/(decrease) in cash",
+    "Cash and cash equivalents at the beginning", "Cash and cash equivalents at the end"
+]
+
+CASH_FLOW_AVOID = ["Consolidated", "Summary", "Unaudited", "Schedule", "SUBSIDIARY"]
+
+
+pdf_path = "/content/BombayDyeing.pdf"
+
+def is_valid_balance_sheet_page(text):
+    text_lower = text.lower()
+    includes = sum(k.lower() in text_lower for k in BALANCE_SHEET_KEYWORDS) >= 6
+    excludes = sum(k.lower() not in text_lower for k in BALANCE_SHEET_AVOID) <= 1
+    return includes and excludes
+
+def is_valid_profit_loss_page(text):
+    text_lower = text.lower()
+    includes = sum(k.lower() in text_lower for k in PROFIT_LOSS_KEYWORDS) >= 5
+    excludes = all(k.lower() not in text_lower for k in PROFIT_LOSS_AVOID)
+    return includes and excludes
+
+def is_valid_cash_flow_page(text):
+    text_lower = text.lower()
+    includes = sum(k.lower() in text_lower for k in CASH_FLOW_KEYWORDS) >= 4
+    excludes = all(k.lower() not in text_lower for k in CASH_FLOW_AVOID)
+    return includes and excludes
+
+
+with pdfplumber.open(pdf_path) as pdf:
+    bs_found = False
+    pl_found = False
+    cf_found = False
+
+    for i, page in enumerate(pdf.pages):
+        text = page.extract_text()
+        if not text:
+            continue
+
+        if not bs_found and is_valid_balance_sheet_page(text):
+            print(f"\n Balance Sheet found on page {i + 1}:\n")
+            #print(text)
+            bs_found = True
+
+        if not pl_found and is_valid_profit_loss_page(text):
+            print(f"\n Statement of Profit and Loss found on page {i + 1}:\n")
+            #print(text)
+            pl_found = True
+
+        if not cf_found and is_valid_cash_flow_page(text):
+            print(f"\n Statement of Cash Flows found on page {i + 1}:\n")
+            #print(text)
+            cf_found = True
+
+
+        if bs_found and pl_found and cf_found:
+            break
+
+    if not bs_found:
+        print(" Balance Sheet page not found.")
+    if not pl_found:
+        print(" Statement of Profit and Loss page not found.")
+    if not cf_found:
+        print(" Statement of Cash Flows page not found.")
