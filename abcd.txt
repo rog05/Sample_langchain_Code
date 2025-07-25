@@ -1,0 +1,109 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\setlength{\parindent}{0pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{1em}{}
+
+\title{Take-Home Assignment: Load and Weather Data Analysis}
+\author{Your Name}
+\date{Submission Date}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Data Cleaning and Preparation}
+
+The dataset had two parts:
+\begin{itemize}
+    \item \textbf{Load data:} Shows hourly electricity usage for a specific zone
+    \item \textbf{Weather data:} Shows hourly temperature from weather stations
+\end{itemize}
+
+Steps for clean and prepare the data
+\begin{itemize}
+    \item Filled missing values
+    \begin{itemize}
+        \item For load data, I used the median value for each hour.
+        \item For weather data, I used forward and backward filling
+    \end{itemize}
+    \item Removed extreme values using Winsorization to reduce outliers.
+    \item Created new time-based features such as:
+    \begin{itemize}
+        \item Hour of the day
+        \item Day of the week
+        \item Month
+        \item Weekend flag (1 for weekend, 0 for weekday)
+        \item 24-hour rolling averages for load and temperature
+    \end{itemize}
+\end{itemize}
+
+\section{Exploratory Data Analysis}
+
+\subsection*{Hourly Patterns}
+\begin{itemize}
+    \item Load increases in the morning (around 7 to 9 AM) and again in the evening (around 6 to 8 PM).
+    \item Weekends have lower and more stable electricity usage compared to weekdays.
+\end{itemize}
+
+\subsection*{Seasonal Patterns}
+\begin{itemize}
+    \item Load is highest in the summer months, in July and August, most likely due to the use of air conditioning.
+    \item Boxplots by month and quarter show clear changes in electricity use across different times of the year.
+\end{itemize}
+
+\subsection*{Temperature and Load}
+\begin{itemize}
+    \item Load increases with temperature, after it goes above 75°F.
+    \item A line plot of average load by temperature bin shows a strong increase in load during hotter conditions.
+\end{itemize}
+
+\subsection*{Other Visuals}
+\begin{itemize}
+    \item Heatmaps show consistent patterns in load by hour and day of the week.
+    \item Histograms show the overall distribution of load and temperature.
+\end{itemize}
+
+\section{Key Findings}
+
+\begin{itemize}
+    \item Electricity load follows a daily routine, with morning and evening peaks.
+    \item Weekends usually have lower electricity use compared to weekdays.
+    \item Higher temperatures lead to increased electricity use.
+    \item Electricity usage changes across seasons.
+    \item Rolling averages help show patterns and may be useful for future modeling.
+\end{itemize}
+
+\section{Optional: Basic Modeling}
+
+I used a Random Forest model to predict electricity load using the features created earlier. This step was optional but helped confirm the patterns found in the data.
+
+Steps I followed:
+\begin{itemize}
+    \item Scaled the input features.
+    \item Used a time-based split to keep training and testing data in the correct order.
+    \item Tuned the model using grid search.
+\end{itemize}
+
+Model results:
+\begin{itemize}
+    \item Mean Absolute Error (MAE): 271.99 MW
+    \item Root Mean Squared Error (RMSE): 377.97 MW
+\end{itemize}
+
+Important features for prediction included temperature, hour of day, and 24-hour rolling load average, which matches the findings from the earlier analysis.
+
+\section{Conclusion}
+
+This analysis showed how electricity usage changes throughout the day, during weekends, and across different seasons
+
+\end{document}
