@@ -12,14 +12,15 @@
 \titleformat{\section}{\large\bfseries}{\thesection.}{1em}{}
 
 \title{Take-Home Assignment: Load and Weather Data Analysis}
-\author{Your Name}
+\author{Rohan Gaikwad \\ \texttt{gaikwadrohan8652@gmail.com}}
 \date{Submission Date}
 
 \begin{document}
 
 \maketitle
 
-
+% Optional: If you'd like to hyperlink to your data location, you can use \href
+%\href{https://drive.google.com/file/d/10korBjci5trtgdAgr8w8ojhKNYgD_H3O/view?usp=sharing}{Link to dataset on Google Drive}
 
 \section{Data Cleaning and Preparation}
 
@@ -104,6 +105,6 @@ Important features for prediction included temperature, hour of day, and 24-hour
 
 \section{Conclusion}
 
-This analysis showed how electricity usage changes throughout the day, during weekends, and across different seasons
+This analysis showed how electricity usage changes throughout the day, during weekends, and across different seasons.
 
 \end{document}
